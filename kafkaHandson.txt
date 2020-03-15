@@ -1,0 +1,55 @@
+This example is tested in cloudx lab.
+
+Set the Kafka path
+
+PATH=$PATH:/usr/hdp/current/kafka-broker/bin
+
+
+#Create the topic
+
+Local Mode:
+kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic PalTestKafka
+
+Cluster Mode:
+kafka-topics.sh --create --zookeeper cxln1.c.thelab-240901.internal:2181 --replication-factor 1 --partitions 1 --topic TestKafkaPal
+
+
+#Check if Topic created
+
+Local Mode
+kafka-topics.sh  --list --zookeeper localhost:2181
+
+Cluster Mode
+kafka-topics.sh  --list --zookeeper cxln1.c.thelab-240901.internal:2181
+
+
+
+# Producer 
+
+1. find the  host name of kafka installed in the clusters.
+  - can be found using zookeeper client.
+  
+   >> zookeeper-client   - Enters into zookeeper client 
+   >> ls /brokers/ids - gives the list of ID's of kafka brokers, it may give results [[1004, 1003, 1002]]
+   >> get /brokers/ids/1002 - gives the details of broker 2 , 
+        here copy the host name[ example :- cxln4.c.thelab-240901.internal:6667] of the broker which will be used in producer.
+   
+Local Mode:
+kafka-console-producer.sh --broker-list localhost:6667 --topic test
+
+cluster Mode:
+kafka-console-producer.sh --broker-list cxln4.c.thelab-240901.internal:6667 --topic TestKafkaPal
+
+
+#consumer
+
+Locla Mode
+kafka-console-consumer.sh --zookeeper localhost:2181 --topic test --from-beginning
+
+cluster Mode
+kafka-console-consumer.sh --zookeeper cxln1.c.thelab-240901.internal:2181 --topic TestKafkaPal --from-beginning
+
+
+Note : 
+topic and cosumer user zookeeper-server address -  cxln1.c.thelab-240901.internal:2181
+producer user zookeeper-client adddres - cxln4.c.thelab-240901.internal:6667
